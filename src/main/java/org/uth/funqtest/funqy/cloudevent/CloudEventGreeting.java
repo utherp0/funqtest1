@@ -1,13 +1,20 @@
 package org.uth.funqtest.funqy.cloudevent;
 
 import io.quarkus.funqy.Funq;
-import org.jboss.logging.Logger;
 
-public class CloudEventGreeting {
-    private static final Logger log = Logger.getLogger(CloudEventGreeting.class);
+public class CloudEventGreeting 
+{
+  @Funq
+  public String event1( Object input )
+  {
+      System.out.println( "In Event1");
+    return( "Processed by event 1:" + input );
+  }
 
-    @Funq
-    public void myCloudEventGreeting(Person input) {
-        log.info("Hello " + input.getName());
-    }
+  @Funq
+  public String event2( Object input )
+  {
+    System.out.println( "In Event2");  
+    return( "Processed by event 2:" + input );
+  }
 }

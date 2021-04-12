@@ -15,14 +15,27 @@ import static org.hamcrest.Matchers.notNullValue;
 public class FunqyTest {
 
     @Test
-    public void testCloudEvent() {
+    public void testCloudEvent1() {
         RestAssured.given().contentType("application/json")
                 .header("ce-specversion", "1.0")
                 .header("ce-id", UUID.randomUUID().toString())
-                .header("ce-type", "myCloudEventGreeting")
+                .header("ce-type", "event1")
                 .header("ce-source", "test")
-                .body("{ \"name\": \"Bill\" }")
+                .body("{\"payload\":\"test1\"}")
                 .post("/")
-                .then().statusCode(204);
+                .then().statusCode(200);
     }
+
+    @Test
+    public void testCloudEvent2() {
+        RestAssured.given().contentType("application/json")
+                .header("ce-specversion", "1.0")
+                .header("ce-id", UUID.randomUUID().toString())
+                .header("ce-type", "event2")
+                .header("ce-source", "test")
+                .body("{\"payload\":\"test2\"}")
+                .post("/")
+                .then().statusCode(200);
+    }
+
 }
