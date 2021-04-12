@@ -35,7 +35,7 @@ public class AttackEvent
     String _prodmode;
 
     @Funq
-    public CloudEvent processor( String input )  
+    public CloudEvent<MessageOutput> processor( String input )  
     {
       return CloudEventBuilder.create()
         .type("attackprocessed-changed")
