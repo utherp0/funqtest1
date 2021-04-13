@@ -38,7 +38,7 @@ public class AttackEvent
     public CloudEvent<MessageOutput> processor( String input )  
     {
       MessageOutput output = buildResponse( input );
-      String eventName = ( output.getHostname() == null ? "attackprocessed" : "attackprocessed-" + hostname );
+      String eventName = ( output.getHostname() == null ? "attackprocessed" : "attackprocessed-" + output.getHostname() );
 
       return CloudEventBuilder.create()
         .type(eventName)
