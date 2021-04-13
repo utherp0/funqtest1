@@ -37,9 +37,12 @@ public class AttackEvent
     @Funq
     public CloudEvent<MessageOutput> processor( String input )  
     {
+      MessageOutput output = buildResponse( input );
+      String eventName = ( output.getHostname() == null ? "attackprocessed" : "attackprocessed-" + hostname );
+
       return CloudEventBuilder.create()
-        .type("attackprocessed-changed")
-        .build(buildResponse(input));      
+        .type(eventName)
+        .build(output);      
     }
  
     public MessageOutput buildResponse( String input )
@@ -68,6 +71,7 @@ public class AttackEvent
         Integer shotCount = by.getInteger("shotCount");
         Integer consecutiveHits = by.getInteger("consecutiveHitsCount");
         String destroyed = message.getString("destroyed");
+        String hostname = message.getString("hostname");
   
         // Watchman
         if( _prodmode.equals("dev"))
@@ -75,19 +79,20 @@ public class AttackEvent
           LocalDateTime now = LocalDateTime.now();
 
           boolean watched = watchman.inform( "[ATTACK] (" + now.toString() +"):" + match + " game:" + game + " hit:" + hit + " uuid:" + uuid + " human:" + human + " destroyed: " + ( destroyed == null ? "false" : destroyed ));
+        
+          // Log for verbosity :-) 
+          System.out.println( "  Game: " + game );
+          System.out.println( "  Match: " + match );
+          System.out.println( "  UUID: " + uuid );
+          System.out.println( "  Hostname: " + hostname );
+          System.out.println( "  Hit: " + hit );
+          System.out.println( "  Username: " + username );
+          System.out.println( "  TS: " + ts );
+          System.out.println( "  Human: " + human );
+          System.out.println( "  ShotCount: " + shotCount );
+          System.out.println( "  ConsecutiveHits: " + consecutiveHits );
+          System.out.println( "  Destroyed: " + destroyed );
         }
-      
-        // Log for verbosity :-) 
-        System.out.println( "  Game: " + game );
-        System.out.println( "  Match: " + match );
-        System.out.println( "  UUID: " + uuid );
-        System.out.println( "  Hit: " + hit );
-        System.out.println( "  Username: " + username );
-        System.out.println( "  TS: " + ts );
-        System.out.println( "  Human: " + human );
-        System.out.println( "  ShotCount: " + shotCount );
-        System.out.println( "  ConsecutiveHits: " + consecutiveHits );
-        System.out.println( "  Destroyed: " + destroyed );
 
         // Replace spaces in the username for URL transmission
         username = username.replaceAll(" ", "%20");
@@ -128,6 +133,7 @@ public class AttackEvent
           output.setGame(game);
           output.setMatch(match);
           output.setUuid(uuid);
+          output.setHostname( hostname );
           output.setTs(ts);
           output.setDelta(Integer.valueOf(delta));
           output.setHuman(human);
